@@ -67,38 +67,29 @@ end
 ### Example without Kaur
 
 ```elixir
-defmodule MyModule do
-
-  def rent_a_car(person = %Person{}) do
-    with {:ok, person1} <- validate_age(person),
-         {:ok, person2} <- validate_bonus(person1)
-    do
-      {:ok, display_driving_message(person2)}
-    else
-      {:error, reason} ->
-        {:error, handle_error(person, reason)}
-    end
+def rent_a_car(person = %Person{}) do
+  with {:ok, person1} <- validate_age(person),
+       {:ok, person2} <- validate_bonus(person1)
+  do
+    {:ok, display_driving_message(person2)}
+  else
+    {:error, reason} ->
+      {:error, handle_error(person, reason)}
   end
-
-  # ... Same business logic as before
 end
 ```
 
 ### Example using Kaur.Result
 
 ```elixir
-defmodule MyModule do
-  alias Kaur.Result
+alias Kaur.Result
 
-  def rent_a_car(person = %Person{}) do
-    person
-    |> validate_age()
-    |> Result.and_then(&validate_bonus/1)
-    |> Result.map(&display_driving_message/1)
-    |> Result.map_error(&handle_error(person, &1))
-  end
-
-  # ... Same business logic as before
+def rent_a_car(person = %Person{}) do
+  person
+  |> validate_age()
+  |> Result.and_then(&validate_bonus/1)
+  |> Result.map(&display_driving_message/1)
+  |> Result.map_error(&handle_error(person, &1))
 end
 ```
 
