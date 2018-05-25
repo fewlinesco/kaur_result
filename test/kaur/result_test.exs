@@ -11,7 +11,10 @@ defmodule Kaur.ResultTest do
 
     assert "Hello World\n" ==
              capture_io(fn ->
-               assert original == Result.tap(original, fn name -> IO.puts("Hello #{name}") end)
+               assert original ==
+                        Result.tap(original, fn name ->
+                          IO.puts("Hello #{name}")
+                        end)
              end)
   end
 
@@ -20,7 +23,10 @@ defmodule Kaur.ResultTest do
 
     assert "" ==
              capture_io(fn ->
-               assert original == Result.tap(original, fn name -> IO.puts("Hello #{name}") end)
+               assert original ==
+                        Result.tap(original, fn name ->
+                          IO.puts("Hello #{name}")
+                        end)
              end)
   end
 
@@ -30,7 +36,9 @@ defmodule Kaur.ResultTest do
     assert "" ==
              capture_io(fn ->
                assert original ==
-                        Result.tap_error(original, fn name -> IO.puts("Hello #{name}") end)
+                        Result.tap_error(original, fn name ->
+                          IO.puts("Hello #{name}")
+                        end)
              end)
   end
 
@@ -40,7 +48,9 @@ defmodule Kaur.ResultTest do
     assert "Hello Oops\n" ==
              capture_io(fn ->
                assert original ==
-                        Result.tap_error(original, fn name -> IO.puts("Hello #{name}") end)
+                        Result.tap_error(original, fn name ->
+                          IO.puts("Hello #{name}")
+                        end)
              end)
   end
 end

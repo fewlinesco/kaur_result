@@ -461,7 +461,8 @@ defmodule Kaur.Result do
       iex> Result.replace_error({:ok, :foo}, :bar)
       {:ok, :foo}
   """
-  @spec replace_error(t(error, success), newError) :: t(newError | error, success)
+  @spec replace_error(t(error, success), newError) ::
+          t(newError | error, success)
         when error: var, newError: var, success: var
   def replace_error(result, new_error) do
     result
@@ -479,7 +480,8 @@ defmodule Kaur.Result do
       iex> Result.replace_ok({:error, :foo}, :bar)
       {:error, :foo}
   """
-  @spec replace_ok(t(error, success), newSuccess) :: t(error, newSuccess | success)
+  @spec replace_ok(t(error, success), newSuccess) ::
+          t(error, newSuccess | success)
         when error: var, newSuccess: var, success: var
   def replace_ok(result, new_success) do
     result
