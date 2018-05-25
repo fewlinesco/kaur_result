@@ -410,7 +410,7 @@ defmodule Kaur.Result do
   end
 
   @doc ~S"""
-  Replace the error of a result tuple.
+  Replaces the error of a result tuple.
 
   ## Examples
 
@@ -429,7 +429,7 @@ defmodule Kaur.Result do
   end
 
   @doc ~S"""
-  Replace the ok value of a result tuple.
+  Replaces the ok value of a result tuple.
 
   ## Examples
 
