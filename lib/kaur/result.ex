@@ -116,27 +116,6 @@ defmodule Kaur.Result do
   def error(value), do: {:error, value}
 
   @doc ~S"""
-  Creates a new error result tuple using a validation function.
-
-  ## Examples
-
-      iex> Result.error("oops", &(&1 == "oops"), :success)
-      {:error, "oops"}
-
-      iex> Result.error("oops", &(&1 != "oops"), :success)
-      {:ok, :success}
-  """
-  @spec error(error, (error -> boolean), success) :: t(error, success)
-        when error: var, success: var
-  def error(error, predicate, potential_success) do
-    if predicate.(error) do
-      error(error)
-    else
-      ok(potential_success)
-    end
-  end
-
-  @doc ~S"""
   Checks if a `result_tuple` is an error.
 
   ## Examples
@@ -172,9 +151,10 @@ defmodule Kaur.Result do
         ) :: t(error | :no_value, success)
         when success: var,
              error: var
-  def from_value(value, on_nil_value \\ :no_value)
-  def from_value(nil, on_nil_value), do: error(on_nil_value)
-  def from_value(value, _on_nil_value), do: ok(value)
+  def from_value(value, on_nil_value \\ :no_value) do
+    value
+    |> validate(&(!is_nil(&1)), on_nil_value)
+  end
 
   @doc ~S"""
   Converts an `Ok` value to an `Error` value if the `predicate` is not valid.
@@ -307,27 +287,6 @@ defmodule Kaur.Result do
   """
   @spec ok(success) :: t(any, success) when success: var
   def ok(value), do: {:ok, value}
-
-  @doc ~S"""
-  Creates a new ok result tuple with a validation function.
-
-  ## Examples
-
-      iex> Result.ok(42, &(&1 > 41), :oops)
-      {:ok, 42}
-
-      iex> Result.ok(42, &(&1 < 41), :oops)
-      {:error, :oops}
-  """
-  @spec ok(success, (success -> boolean), error) :: t(error, success)
-        when error: var, success: var
-  def ok(value, predicate, potential_error) do
-    if predicate.(value) do
-      ok(value)
-    else
-      error(potential_error)
-    end
-  end
 
   @doc ~S"""
   Checks if a `result_tuple` is ok.
@@ -558,6 +517,26 @@ defmodule Kaur.Result do
       function.(value)
       value
     end)
+  end
+
+  @doc ~S"""
+  Creates a new ok result tuple with a validation function.
+
+  ## Examples
+
+      iex> Result.validate(42, &(&1 > 41), :oops)
+      {:ok, 42}
+
+      iex> Result.validate(42, &(&1 < 41), :oops)
+      {:error, :oops}
+  """
+  @spec validate(success, (success -> boolean), error | :invalid) ::
+          t(error | :invalid, success)
+        when error: var, success: var
+  def validate(value, predicate, potential_error \\ :invalid) do
+    value
+    |> ok()
+    |> keep_if(predicate, potential_error)
   end
 
   @doc ~S"""
