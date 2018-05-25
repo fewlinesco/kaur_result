@@ -116,6 +116,27 @@ defmodule Kaur.Result do
   def error(value), do: {:error, value}
 
   @doc ~S"""
+  Creates a new error result tuple using a validation function.
+
+  ## Examples
+
+      iex> Result.error("oops", &(&1 == "oops"), :success)
+      {:error, "oops"}
+
+      iex> Result.error("oops", &(&1 != "oops"), :success)
+      {:ok, :success}
+  """
+  @spec error(error, (error -> boolean), success) :: t(error, success)
+        when error: var, success: var
+  def error(error, predicate, potential_success) do
+    if predicate.(error) do
+      error(error)
+    else
+      ok(potential_success)
+    end
+  end
+
+  @doc ~S"""
   Checks if a `result_tuple` is an error.
 
   ## Examples
@@ -288,6 +309,27 @@ defmodule Kaur.Result do
   def ok(value), do: {:ok, value}
 
   @doc ~S"""
+  Creates a new ok result tuple with a validation function.
+
+  ## Examples
+
+      iex> Result.ok(42, &(&1 > 41), :oops)
+      {:ok, 42}
+
+      iex> Result.ok(42, &(&1 < 41), :oops)
+      {:error, :oops}
+  """
+  @spec ok(success, (success -> boolean), error) :: t(error, success)
+        when error: var, success: var
+  def ok(value, predicate, potential_error) do
+    if predicate.(value) do
+      ok(value)
+    else
+      error(potential_error)
+    end
+  end
+
+  @doc ~S"""
   Checks if a `result_tuple` is ok.
 
   ## Examples
@@ -406,6 +448,42 @@ defmodule Kaur.Result do
              newError: var
   def reject_if(result, predicate, error_message \\ :invalid) do
     keep_if(result, &(not predicate.(&1)), error_message)
+  end
+
+  @doc ~S"""
+  Replace the error of a result tuple.
+
+  ## Examples
+
+      iex> Result.replace_error({:error, :foo}, :bar)
+      {:error, :bar}
+
+      iex> Result.replace_error({:ok, :foo}, :bar)
+      {:ok, :foo}
+  """
+  @spec replace_error(t(error, success), newError) :: t(newError | error, success)
+        when error: var, newError: var, success: var
+  def replace_error(result, new_error) do
+    result
+    |> map_error(fn _ -> new_error end)
+  end
+
+  @doc ~S"""
+  Replace the ok value of a result tuple.
+
+  ## Examples
+
+      iex> Result.replace_ok({:ok, :foo}, :bar)
+      {:ok, :bar}
+
+      iex> Result.replace_ok({:error, :foo}, :bar)
+      {:error, :foo}
+  """
+  @spec replace_ok(t(error, success), newSuccess) :: t(error, newSuccess | success)
+        when error: var, newSuccess: var, success: var
+  def replace_ok(result, new_success) do
+    result
+    |> map(fn _ -> new_success end)
   end
 
   @doc ~S"""
