@@ -12,7 +12,7 @@ defmodule KaurResult.MixProject do
       docs: [main: "readme", extras: ["README.md"]],
       elixir: "~> 1.4",
       homepage_url: @project_url,
-      name: "Kaur",
+      name: "kaur_result",
       package: package(),
       source_url: @project_url,
       start_permanent: Mix.env() == :prod,
