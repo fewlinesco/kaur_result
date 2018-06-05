@@ -7,7 +7,7 @@ By participating in this project, you agree to abide by its [Code of Conduct](CO
 In addition, take care to use the same versions of Elixir
 and Erlang that we use for development. You can refer to
 the [.tool-versions](.tool-versions) file
-(usable via asdf install if you use [Asdf](https://github.com/asdf-vm/asdf)).
+(usable via `asdf install` if you use [Asdf](https://github.com/asdf-vm/asdf)).
 
 Before submitting a Pull Request, please ensure the following:
 
